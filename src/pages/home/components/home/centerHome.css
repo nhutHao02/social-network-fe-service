@@ -1,0 +1,7 @@
+.home_center {
+    min-width: 50%;
+    height: 100%;
+    margin-left: calc( 20% + 100px);
+    margin-right: 0px;
+
+}

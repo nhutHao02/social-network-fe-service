@@ -1,0 +1,12 @@
+.rightbar_container {
+    width: 20%;
+    height: 100%;
+    top: 0;
+    right: 50px; 
+    overflow-y: scroll;
+    border-left: 1px solid rgba(201, 201, 201, 0.646);
+    position: fixed;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+}
