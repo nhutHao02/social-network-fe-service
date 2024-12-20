@@ -18,27 +18,9 @@ const ENDPOINTS = {
             requiresToken: true,
             responseType: 'json'
         },
-        GET_BOOKMARK_TWEETS: {
-            method: 'GET',
-            url: ({userID, page = 0, limit = 10}) => `${BASE_URL}/tweet-saved/get-saved-tweet/${userID}?page=${page}&limit=${limit}`,
-            requiresToken: true,
-            responseType: 'json'
-        },
         GET_TWEETS_BY_USERID: {
             method: 'GET',
-            url: ({userID, page = 0, limit = 10}) => `${BASE_URL}/tweet/tweets/${userID}?page=${page}&limit=${limit}`,
-            requiresToken: true,
-            responseType: 'json'
-        },
-        GET_REPOST_TWEETS_BY_USERID: {
-            method: 'GET',
-            url: ({userID, page = 0, limit = 10}) => `${BASE_URL}/tweet-repost/get-repost-tweet/${userID}?page=${page}&limit=${limit}`,
-            requiresToken: true,
-            responseType: 'json'
-        },
-        GET_LOVE_TWEETS_BY_USERID: {
-            method: 'GET',
-            url: ({userID, page = 0, limit = 10}) => `${BASE_URL}/tweet-love/get-tweet-loved/${userID}?page=${page}&limit=${limit}`,
+            url: ({userID, action, page = 1, limit = 10}) => `${TWEER_URL_BASE}/tweet/tweet-action?userID=${userID}&page=${page}&limit=${limit}&action=${action}`,
             requiresToken: true,
             responseType: 'json'
         },

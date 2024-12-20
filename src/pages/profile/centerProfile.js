@@ -2,59 +2,44 @@ import React, {useEffect} from "react";
 import { useState } from "react";
 import ENDPOINTS from "../../service/API";
 import perform from "../../service/Service";
-import { ResponseCode } from "../../service/Code";
 import TweetCard from "../home/components/home/components/tweetCard";
 
 export default function CenterProfile() {
 
   const [tweets, setTweets] = useState([]);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [limnit, _] = useState(10);
   const Tabs = {
     POSTS: {
       title: "Posts",
-      endpoint: ENDPOINTS.TWEETS.GET_TWEETS_BY_USERID,
-      params: {
-        userID: localStorage.getItem("id"),
-        page: page,
-        limit: limnit,
-      }
+      action: "Post",
     },
     REPOSTS: {
       title: "RePosts",
-      endpoint: ENDPOINTS.TWEETS.GET_REPOST_TWEETS_BY_USERID,
-      params: {
-        userID: localStorage.getItem("id"),
-        page: page,
-        limit: limnit,
-      }
+      action: "Repost",
     },
     LOVES: {
       title: "Loves",
-      endpoint: ENDPOINTS.TWEETS.GET_LOVE_TWEETS_BY_USERID,
-      params: {
-        userID: localStorage.getItem("id"),
-        page: page,
-        limit: limnit,
-      }
+      action: "Love",
     },
     BOOKMARKS: {
       title: "Bookmarks",
-      endpoint: ENDPOINTS.TWEETS.GET_BOOKMARK_TWEETS,
-      params: {
-        userID: localStorage.getItem("id"),
-        page: page,
-        limit: limnit,
-      }
+      action: "Bookmark",
     },
   }
   const [selected, setSelected] = useState(Tabs.POSTS);
   const fetchData = async () => {
     try {
-      var response = await perform(selected.endpoint, 
-        selected.params
+      setTweets([]);
+      let response = await perform(ENDPOINTS.TWEETS.GET_TWEETS_BY_USERID, 
+        {
+          userID: localStorage.getItem("id"),
+          action: selected.action,
+          page: page,
+          limit: limnit,
+        }
       );
-      if (response.code == ResponseCode.OK) {
+      if (response.success) {
         setTweets(response.data);
         // setTweets((prevTweets) => [...prevTweets, ...response.data]);
         // setPage((prevPage) => prevPage + 1);
@@ -127,19 +112,7 @@ export default function CenterProfile() {
         tweets.map((tweet, index) => (
           <TweetCard
             key={index}
-            props={{
-              id: tweet.id,
-              urlAvt: tweet.user.urlAvt,
-              fullName: tweet.user.fullName,
-              urlImage: tweet.urlImage,
-              urlVideo: tweet.urlVideo,
-              loves: tweet.totalLove,
-              comments: tweet.totalComment,
-              reposts: tweet.totalRepost,
-              saves: tweet.totalSaved,
-              content: tweet.content,
-              timestamp: tweet.createAt,
-            }}
+            props={{tweet}}
           />
         ))
       ) : (

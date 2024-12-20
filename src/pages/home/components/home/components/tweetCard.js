@@ -140,19 +140,19 @@ export default function TweetCard({ props }) {
 
         <div className="flex justify-between py-1 pl-16 pr-5 text-lg">
           <div className="flex justify-center items-center space-x-1">
-            <ion-icon name={tweet.action.love ? "heart" : "heart-outline"} onClick={()=>handleClick("Love", !tweet.action.love)}></ion-icon>
+            <ion-icon name={tweet.action.love ? "heart" : "heart-outline"} onClick={()=>handleClick("Love", !tweet.action.love)} style={{ color: "gray" }}></ion-icon>
             <p className="w-6 text-left">{tweet.statistics.totalLove}</p>
           </div>
           <div className="flex justify-center items-center space-x-1">
-            <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+            <ion-icon name="chatbubble-ellipses-outline" style={{ color: "gray" }}></ion-icon>
             <p className="w-6 text-left">{tweet.statistics.totalComment}</p>
           </div>
           <div className="flex justify-center items-center space-x-1">
-            <ion-icon name={tweet.action.repost ? "git-compare" : "git-compare-outline"} onClick={()=>handleClick("Repost", !tweet.action.repost)}></ion-icon>
+            <ion-icon name={tweet.action.repost ? "git-compare" : "git-compare-outline"} onClick={()=>handleClick("Repost", !tweet.action.repost)} style={{ color: "gray" }}></ion-icon>
             <p className="w-6 text-left">{tweet.statistics.totalRepost}</p>
           </div>
           <div className="flex justify-center items-center space-x-1">
-            <ion-icon name={tweet.action.bookmark ? "bookmark" : "bookmark-outline"} onClick={()=>handleClick("Bookmark", !tweet.action.bookmark)}></ion-icon>
+            <ion-icon name={tweet.action.bookmark ? "bookmark" : "bookmark-outline"} onClick={()=>handleClick("Bookmark", !tweet.action.bookmark)} style={{ color: "gray" }}></ion-icon>
             <p className="w-6 text-left">{tweet.statistics.totalBookmark}</p>
           </div>
         </div>
