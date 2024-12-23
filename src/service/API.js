@@ -58,6 +58,26 @@ const ENDPOINTS = {
             requiresToken: true,
             responseType: 'json'
         }
-    }
+    },
+    USER: {
+        GET_INFO_BY_USER_ID: {
+            method: 'GET',
+            url: ({userID}) => `${USER_URL_BASE}/user/${userID}`,
+            requiresToken: true,
+            responseType: 'json'
+        },
+        GET_FOLLOWING_OF_USER_ID: {
+            method: 'GET',
+            url: ({userID}) => `${USER_URL_BASE}/user/following/${userID}`,
+            requiresToken: true,
+            responseType: 'json'
+        },
+        GET_FOLLOWER_OF_USER_ID: {
+            method: 'GET',
+            url: ({userID}) => `${USER_URL_BASE}/user/follower/${userID}`,
+            requiresToken: true,
+            responseType: 'json'
+        }
+    },
 }
 export default ENDPOINTS

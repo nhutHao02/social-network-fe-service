@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import perform from "../../../../../service/Service";
 import ENDPOINTS from "../../../../../service/API";
+import { getSubName } from "../../../../../utils/sub";
 
 export default function TweetCard({ props }) {
   const [tweet, setTweet] = useState(props.tweet);
@@ -95,13 +96,6 @@ export default function TweetCard({ props }) {
   function handleClick(action, actionType) {
     handleActionToTweet(action, actionType)
   }
-
-  function getSubName(email) {
-    if (email.includes("@")) {
-        return email.split("@")[0];
-    }
-    return "";
-}
 
   return (
     <div className="border-t-[1px] border-gray-300">
