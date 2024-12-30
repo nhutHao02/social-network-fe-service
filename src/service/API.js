@@ -1,7 +1,7 @@
 const USER_URL_BASE = "http://localhost:7000/api/v1";
 const TWEER_URL_BASE = "http://localhost:4000/api/v1";
 const CHAT_URL_BASE = "http://localhost:5000/api/v1";
-const NOTIF_URL_BASE = "http://localhost:6000/api/v1";
+const NOTIF_URL_BASE = "http://localhost:9000/api/v1";
 const BASE_URL = "http://localhost:8000/api/v1";
 
 const ENDPOINTS = {
@@ -54,7 +54,7 @@ const ENDPOINTS = {
     NOTIFICATION: {
         GET_NOTIFICATIONS: {
             method: 'GET',
-            url: ({userID, page = 0, limit = 12}) => `${BASE_URL}/notification/get/${userID}?page=${page}&limit=${limit}`,
+            url: ({userID, page = 1, limit = 12}) => `${NOTIF_URL_BASE}/notif?userID=${userID}&page=${page}&limit=${limit}`,
             requiresToken: true,
             responseType: 'json'
         }

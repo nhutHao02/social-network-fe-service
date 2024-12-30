@@ -45,9 +45,6 @@ export default function CenterProfile() {
       });
       if (response.success) {
         setTweets(response.data);
-        // setTweets((prevTweets) => [...prevTweets, ...response.data]);
-        // setPage((prevPage) => prevPage + 1);
-        // console.log(response);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
