@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./nav.css";
 import { NavLink, Link } from "react-router-dom";
+import perform from "../../../../service/Service";
+import ENDPOINTS from "../../../../service/API";
+import { getSubName } from "../../../../utils/sub";
 
 export default function Nav() {
+  const [userInfo, setUserInfo] = useState(null);
+  useEffect(() => {
+    // get info
+    const fetchUserInfo = async () => {
+      let response = await perform(ENDPOINTS.USER.GET_INFO_BY_USER_ID, {
+        userID: localStorage.getItem("id"),
+      });
+      if (response.success) {
+        console.log(response.data);
+        setUserInfo(response.data);
+      }
+    };
+
+    fetchUserInfo().catch((error) =>
+      console.error("Error fetching data:", error)
+    );
+  }, []);
+  if (!userInfo) {
+    return <p>Loading...</p>;
+  }
   return (
     <div className="nav_container">
       <Link to="/" className="logo">
@@ -33,7 +56,7 @@ export default function Nav() {
            <div className="size-[42px]"><i className="fa-regular fa-bookmark"></i></div>Bookmarks
         </p>
       </NavLink>
-      <NavLink to="/profile" activeClassName="active" className="row">
+      <NavLink to={`/profile/${localStorage.getItem("id")}`} activeClassName="active" className="row">
         <p className="flex">
            <div className="size-[42px]"><i className="fa-regular fa-user"></i></div>Profile
         </p>
@@ -49,11 +72,11 @@ export default function Nav() {
       </div>
       <div className="info_user">
         <div className="img">
-          <img src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?w=740&t=st=1720022602~exp=1720023202~hmac=7ea40d1d2cf6c229f602a5817a5a2871ec4b73df95dfdd6ce7c0e35788b307be"></img>
+          <img src={userInfo.urlAvt}></img>
         </div>
         <div className="info">
-          <p className="name">Username</p>
-          <p>email</p>
+          <p className="name">{userInfo.fullName}</p>
+          <p>@{getSubName(userInfo.email)}</p>
         </div>
       </div>
     </div>

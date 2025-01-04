@@ -4,6 +4,7 @@ import ENDPOINTS from "../../service/API";
 import perform from "../../service/Service";
 import TweetCard from "../home/components/home/components/tweetCard";
 import { getSubName, formatDateToMonthYear } from "../../utils/sub";
+import { useParams } from "react-router-dom";
 
 export default function CenterProfile() {
   const [tweets, setTweets] = useState([]);
@@ -15,6 +16,7 @@ export default function CenterProfile() {
   const [follower, setFollower] = useState(0);
   const [following, setFollowing] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
+  const { userID } = useParams(); 
   const Tabs = {
     POSTS: {
       title: "Posts",
@@ -38,7 +40,7 @@ export default function CenterProfile() {
     try {
       setTweets([]);
       let response = await perform(ENDPOINTS.TWEETS.GET_TWEETS_BY_USERID, {
-        userID: localStorage.getItem("id"),
+        userID: userID,
         action: selected.action,
         page: page,
         limit: limnit,
@@ -59,7 +61,7 @@ export default function CenterProfile() {
     // get info
     const fetchUserInfo = async () => {
       let response = await perform(ENDPOINTS.USER.GET_INFO_BY_USER_ID, {
-        userID: localStorage.getItem("id"),
+        userID: userID,
       });
       if (response.success) {
         console.log(response.data);
@@ -70,7 +72,7 @@ export default function CenterProfile() {
     // get follow
     const fetchFollowerInfo = async () => {
       let response = await perform(ENDPOINTS.USER.GET_FOLLOWER_OF_USER_ID, {
-        userID: localStorage.getItem("id"),
+        userID: userID,
       });
       if (response.success) {
         setFollower(response.data.total);
@@ -81,7 +83,7 @@ export default function CenterProfile() {
     // get follow
     const fetchFollowingInfo = async () => {
       let response = await perform(ENDPOINTS.USER.GET_FOLLOWING_OF_USER_ID, {
-        userID: localStorage.getItem("id"),
+        userID: userID,
       });
       if (response.success) {
         setFollowing(response.data.total);

@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
         element: <PrivateRoute element={<Message />} />,
       },
       {
-        path: "/profile",
+        path: "/profile/:userID",
         element: <PrivateRoute element={<Profile />} />,
       },
       {
