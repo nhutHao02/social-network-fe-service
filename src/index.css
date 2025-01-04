@@ -604,8 +604,16 @@ video {
   margin-bottom: 1rem;
 }
 
+.ml-16 {
+  margin-left: 4rem;
+}
+
 .ml-2 {
   margin-left: 0.5rem;
+}
+
+.ml-\[12px\] {
+  margin-left: 12px;
 }
 
 .ml-\[calc\(20\%\+100px\)\] {
@@ -626,6 +634,10 @@ video {
 
 .mr-4 {
   margin-right: 1rem;
+}
+
+.mr-5 {
+  margin-right: 1.25rem;
 }
 
 .mt-12 {
@@ -833,6 +845,10 @@ video {
 
 .rounded-3xl {
   border-radius: 1.5rem;
+}
+
+.rounded-\[10px\] {
+  border-radius: 10px;
 }
 
 .rounded-full {

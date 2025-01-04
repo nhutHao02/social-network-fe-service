@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import perform from "../../../../../service/Service";
 import ENDPOINTS from "../../../../../service/API";
 import { getSubName } from "../../../../../utils/sub";
+import { useNavigate } from "react-router-dom";
 
 export default function TweetCard({ props }) {
   const [tweet, setTweet] = useState(props.tweet);
+  const navigate = useNavigate();
 
   function formatTimeFromNow(dateString) {
     const inputDate = new Date(dateString);
@@ -36,56 +38,62 @@ export default function TweetCard({ props }) {
 
   async function handleActionToTweet(action, actionType) {
     try {
-      let url = actionType ? ENDPOINTS.TWEETS.ACTION_TWEET_BY_USERID : ENDPOINTS.TWEETS.DELETE_ACTION_TWEET_BY_USERID;
-      let updatedAction = {...tweet.action};
-      let updatedStatistics = { ...tweet.statistics }; 
-  
+      let url = actionType
+        ? ENDPOINTS.TWEETS.ACTION_TWEET_BY_USERID
+        : ENDPOINTS.TWEETS.DELETE_ACTION_TWEET_BY_USERID;
+      let updatedAction = { ...tweet.action };
+      let updatedStatistics = { ...tweet.statistics };
+
       // Determine which action to take
-      switch(action) {
+      switch (action) {
         case "Love":
           updatedAction = {
             ...tweet.action,
-            love: !tweet.action.love
+            love: !tweet.action.love,
           };
-          updatedStatistics.totalLove = actionType 
-            ? updatedStatistics.totalLove + 1 
+          updatedStatistics.totalLove = actionType
+            ? updatedStatistics.totalLove + 1
             : updatedStatistics.totalLove - 1;
           break;
         case "Bookmark":
           updatedAction = {
             ...tweet.action,
-            bookmark: !tweet.action.bookmark
+            bookmark: !tweet.action.bookmark,
           };
-          updatedStatistics.totalBookmark = actionType 
-            ? updatedStatistics.totalBookmark + 1 
+          updatedStatistics.totalBookmark = actionType
+            ? updatedStatistics.totalBookmark + 1
             : updatedStatistics.totalBookmark - 1;
           break;
         case "Repost":
           updatedAction = {
             ...tweet.action,
-            repost: !tweet.action.repost
+            repost: !tweet.action.repost,
           };
-          updatedStatistics.totalRepost = actionType 
-            ? updatedStatistics.totalRepost + 1 
+          updatedStatistics.totalRepost = actionType
+            ? updatedStatistics.totalRepost + 1
             : updatedStatistics.totalRepost - 1;
           break;
         default:
           return;
       }
-  
+
       // Call the API
-      let response = await perform(url, {}, {
-        userID: parseInt(localStorage.getItem("id")),
-        tweetID: tweet.id,
-        action: action
-      });
-  
+      let response = await perform(
+        url,
+        {},
+        {
+          userID: parseInt(localStorage.getItem("id")),
+          tweetID: tweet.id,
+          action: action,
+        }
+      );
+
       // If the response is successful, update the state
       if (response.success) {
-        setTweet(prevTweet => ({
+        setTweet((prevTweet) => ({
           ...prevTweet,
           action: updatedAction,
-          statistics: updatedStatistics
+          statistics: updatedStatistics,
         }));
       }
     } catch (error) {
@@ -94,7 +102,11 @@ export default function TweetCard({ props }) {
   }
 
   function handleClick(action, actionType) {
-    handleActionToTweet(action, actionType)
+    handleActionToTweet(action, actionType);
+  }
+
+  function handleNavigateToDetail() {
+    navigate(`/tweet/${tweet.id}`, { state: { tweet } }); // Navigate to tweet detail with tweet data
   }
 
   return (
@@ -109,15 +121,21 @@ export default function TweetCard({ props }) {
             />
             <div>
               <div className="flex">
-                <p className="font-semibold text-black">{tweet.userInfo.fullName}</p>
+                <p className="font-semibold text-black">
+                  {tweet.userInfo.fullName}
+                </p>
                 <p className="text-gray-400 font-light pl-1 text-sm pt-[3px]">
                   {" "}
                   • {formatTimeFromNow(tweet.createdAt)}
                 </p>
               </div>
-              <h3 className="text-gray-400 font-light">@{getSubName(tweet.userInfo.email)}</h3>
+              <h3 className="text-gray-400 font-light">
+                @{getSubName(tweet.userInfo.email)}
+              </h3>
               <div>
-                <p className="text-black">{tweet.content}</p>
+                <p className="text-black" onClick={handleNavigateToDetail}>
+                  {tweet.content}
+                </p>
               </div>
             </div>
           </div>
@@ -129,24 +147,40 @@ export default function TweetCard({ props }) {
         {/* image-video */}
         <img
           className="object-cover rounded-2xl h-96 w-full items-center pl-16 pr-5"
+          onClick={handleNavigateToDetail}
           src={tweet.urlImg}
         />
 
         <div className="flex justify-between py-1 pl-16 pr-5 text-lg">
           <div className="flex justify-center items-center space-x-1">
-            <ion-icon name={tweet.action.love ? "heart" : "heart-outline"} onClick={()=>handleClick("Love", !tweet.action.love)} style={{ color: "gray" }}></ion-icon>
+            <ion-icon
+              name={tweet.action.love ? "heart" : "heart-outline"}
+              onClick={() => handleClick("Love", !tweet.action.love)}
+              style={{ color: "gray" }}
+            ></ion-icon>
             <p className="w-6 text-left">{tweet.statistics.totalLove}</p>
           </div>
           <div className="flex justify-center items-center space-x-1">
-            <ion-icon name="chatbubble-ellipses-outline" style={{ color: "gray" }}></ion-icon>
+            <ion-icon
+              name="chatbubble-ellipses-outline"
+              style={{ color: "gray" }}
+            ></ion-icon>
             <p className="w-6 text-left">{tweet.statistics.totalComment}</p>
           </div>
           <div className="flex justify-center items-center space-x-1">
-            <ion-icon name={tweet.action.repost ? "git-compare" : "git-compare-outline"} onClick={()=>handleClick("Repost", !tweet.action.repost)} style={{ color: "gray" }}></ion-icon>
+            <ion-icon
+              name={tweet.action.repost ? "git-compare" : "git-compare-outline"}
+              onClick={() => handleClick("Repost", !tweet.action.repost)}
+              style={{ color: "gray" }}
+            ></ion-icon>
             <p className="w-6 text-left">{tweet.statistics.totalRepost}</p>
           </div>
           <div className="flex justify-center items-center space-x-1">
-            <ion-icon name={tweet.action.bookmark ? "bookmark" : "bookmark-outline"} onClick={()=>handleClick("Bookmark", !tweet.action.bookmark)} style={{ color: "gray" }}></ion-icon>
+            <ion-icon
+              name={tweet.action.bookmark ? "bookmark" : "bookmark-outline"}
+              onClick={() => handleClick("Bookmark", !tweet.action.bookmark)}
+              style={{ color: "gray" }}
+            ></ion-icon>
             <p className="w-6 text-left">{tweet.statistics.totalBookmark}</p>
           </div>
         </div>

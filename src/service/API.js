@@ -36,6 +36,13 @@ const ENDPOINTS = {
             requiresToken: true,
             responseType: 'json'
         },
+        GET_TWEET_COMMENTS: {
+            method: 'GET',
+            url: ({tweetID, page = 1, limit = 10}) => `${TWEER_URL_BASE}/tweet/comment?page=${page}&limit=${limit}&tweetID=${tweetID}`,
+            requiresToken: true,
+            responseType: 'json'
+        },
+
     },
     AUTH: {
         SIGN_UP: {
