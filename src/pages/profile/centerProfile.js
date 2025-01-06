@@ -5,6 +5,8 @@ import perform from "../../service/Service";
 import TweetCard from "../home/components/home/components/tweetCard";
 import { getSubName, formatDateToMonthYear } from "../../utils/sub";
 import { useParams } from "react-router-dom";
+import EditInfo from "./conponents/editInfo";
+import { AppsSharp } from "react-ionicons";
 
 export default function CenterProfile() {
   const [tweets, setTweets] = useState([]);
@@ -16,7 +18,8 @@ export default function CenterProfile() {
   const [follower, setFollower] = useState(0);
   const [following, setFollowing] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
-  const { userID } = useParams(); 
+  const { userID } = useParams();
+  const [reloadUser, setReloadUser] = useState(false);
   const Tabs = {
     POSTS: {
       title: "Posts",
@@ -58,8 +61,8 @@ export default function CenterProfile() {
   }, [selected]);
 
   useEffect(() => {
-    // get info
-    const fetchUserInfo = async () => {
+     // get info
+     const fetchUserInfo = async () => {
       let response = await perform(ENDPOINTS.USER.GET_INFO_BY_USER_ID, {
         userID: userID,
       });
@@ -69,6 +72,12 @@ export default function CenterProfile() {
       }
     };
 
+    fetchUserInfo().catch((error) =>
+      console.error("Error fetching data:", error)
+    );
+    
+  }, [reloadUser]);
+  useEffect(() => {
     // get follow
     const fetchFollowerInfo = async () => {
       let response = await perform(ENDPOINTS.USER.GET_FOLLOWER_OF_USER_ID, {
@@ -90,10 +99,6 @@ export default function CenterProfile() {
         setFollowings(response.data.followUserInfo);
       }
     };
-
-    fetchUserInfo().catch((error) =>
-      console.error("Error fetching data:", error)
-    );
 
     fetchFollowerInfo().catch((error) =>
       console.error("Error fetching data:", error)
@@ -117,6 +122,21 @@ export default function CenterProfile() {
     setIsEditing(false);
   };
 
+  const updateInfo = async (payload) => {
+    try {
+      let response = await perform(
+        ENDPOINTS.USER.UPDATE_USER_INFO,
+        {},
+        payload
+      );
+      if (response.success) {
+        setReloadUser(!reloadUser);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <div className="min-w-[50%] h-full ml-[calc(20%+100px)] mr-0">
       <div className="min-h-screen text-white">
@@ -133,7 +153,10 @@ export default function CenterProfile() {
                     src={userInfo.urlAvt}
                   />
                 </div>
-                <button className="ml-auto mr-4 px-4 py-2 mt-2 border border-gray-600 rounded-full text-black font-bold" onClick={openEditModal}>
+                <button
+                  className="ml-auto mr-4 px-4 py-2 mt-2 border border-gray-600 rounded-full text-black font-bold"
+                  onClick={openEditModal}
+                >
                   Edit profile
                 </button>
               </div>
@@ -205,87 +228,11 @@ export default function CenterProfile() {
           <p>No tweets available</p>
         )}
 
-        {isEditing && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-lg w-1/2">
-              <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
-
-              <div className="mb-4">
-                <label className="block mb-2 text-gray-700">
-                  Background Image URL
-                </label>
-                <input
-                  type="text"
-                  value={editInfo.backgroundUrl}
-                  onChange={(e) =>
-                    setEditInfo({ ...editInfo, backgroundUrl: e.target.value })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block mb-2 text-gray-700">
-                  Avatar Image URL
-                </label>
-                <input
-                  type="text"
-                  value={editInfo.avatarUrl}
-                  onChange={(e) =>
-                    setEditInfo({ ...editInfo, avatarUrl: e.target.value })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block mb-2 text-gray-700">Full Name</label>
-                <input
-                  type="text"
-                  value={editInfo.fullName}
-                  onChange={(e) =>
-                    setEditInfo({ ...editInfo, fullName: e.target.value })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block mb-2 text-gray-700">Sex</label>
-                <select
-                  value={editInfo.sex}
-                  onChange={(e) =>
-                    setEditInfo({ ...editInfo, sex: e.target.value })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              <div className="flex justify-between">
-                <button
-                  onClick={closeEditModal}
-                  className="px-4 py-2 border border-gray-600 rounded text-gray-600"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => {
-                    // Xử lý lưu thông tin ở đây
-                    setUserInfo(editInfo); // Lưu thông tin đã chỉnh sửa
-                    closeEditModal();
-                  }}
-                  className="px-4 py-2 bg-blue-600 text-white rounded"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {isEditing && <EditInfo 
+        userInfo={userInfo}
+        closeEditModal={closeEditModal}
+        updateInfo={updateInfo}
+        />}
       </div>
     </div>
   );

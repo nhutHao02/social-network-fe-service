@@ -84,7 +84,13 @@ const ENDPOINTS = {
             url: ({userID}) => `${USER_URL_BASE}/user/follower/${userID}`,
             requiresToken: true,
             responseType: 'json'
-        }
+        },
+        UPDATE_USER_INFO: {
+            method: 'PUT',
+            url: ({userID}) => `${USER_URL_BASE}/user`,
+            requiresToken: true,
+            responseType: 'json'
+        },
     },
 }
 export default ENDPOINTS
