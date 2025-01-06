@@ -163,6 +163,7 @@ export default function TweetCard({ props }) {
           <div className="flex justify-center items-center space-x-1">
             <ion-icon
               name="chatbubble-ellipses-outline"
+              onClick={handleNavigateToDetail}
               style={{ color: "gray" }}
             ></ion-icon>
             <p className="w-6 text-left">{tweet.statistics.totalComment}</p>
