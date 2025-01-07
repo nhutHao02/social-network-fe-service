@@ -92,5 +92,19 @@ const ENDPOINTS = {
             responseType: 'json'
         },
     },
+    CHAT: {
+        RECENT_MESSAGES: {
+            method: 'GET',
+            url: ({userID, page = 1, limit = 12}) => `${CHAT_URL_BASE}/chat/recent?userID=${userID}&page=${page}&limit=${limit}`,
+            requiresToken: true,
+            responseType: 'json'
+        },
+        GET_PRIVATE_MESSAGES: {
+            method: 'GET',
+            url: ({senderID, receiverID, page = 1, limit = 12}) => `${CHAT_URL_BASE}/chat?senderID=${senderID}&receiverID=${receiverID}&page=${page}&limit=${limit}`,
+            requiresToken: true,
+            responseType: 'json'
+        }
+    },
 }
 export default ENDPOINTS
