@@ -9,7 +9,7 @@ export default function CenterMessage() {
   const [limit, _] = useState(10);
   const [recentMessages, setRecentMessages] = useState([]);
   const [socket, setSocket] = useState(null);
-
+  const [recentSocket, setRecentSocket] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const [contenMessage, setContenMessage] = useState("");
 
@@ -75,7 +75,7 @@ export default function CenterMessage() {
         limit: limit,
       });
       if (response.success) {
-        // console.log(response.data);
+        console.log(response.data);
         setRecentMessages(response.data);
       }
     } catch (error) {
@@ -83,8 +83,66 @@ export default function CenterMessage() {
     }
   };
 
+  const connectRecentMgsSocket = () => {
+    // Close the previous WebSocket connection if it exists
+    if (recentSocket) {
+      recentSocket.close();
+    }
+
+    const userID = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
+    // Create a new WebSocket connection
+    const newSocket = new WebSocket(
+      `ws://localhost:5000/api/v1/ws/recent?userID=${userID}&token=${token}`
+    );
+
+    // Set up WebSocket event handlers
+    newSocket.onopen = () => {
+      console.log(`WebSocket connected for recent message`);
+    };
+
+    newSocket.onmessage = (event) => {
+      const recentMessage = JSON.parse(event.data);
+      setRecentMessages((prevMessages) => {
+        const messageIndex = prevMessages.findIndex(
+          (msg) =>
+            (msg.senderID == recentMessage.senderID &&
+              msg.receiverID == recentMessage.receiverID) ||
+            (msg.senderID == recentMessage.receiverID &&
+              msg.receiverID == recentMessage.senderID)
+        );
+
+        if (messageIndex !== -1) {
+          const updatedMessages = [...prevMessages];
+          updatedMessages[messageIndex] = {
+            ...updatedMessages[messageIndex],
+            content: recentMessage.content,
+          };
+
+          const [movedMessage] = updatedMessages.splice(messageIndex, 1);
+          updatedMessages.unshift(movedMessage);
+          return updatedMessages;
+        } else {
+          return [recentMessage, ...prevMessages];
+        }
+      });
+    };
+
+    newSocket.onclose = () => {
+      console.log("WebSocket closed");
+    };
+
+    newSocket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    // Save the new WebSocket instance in the state
+    setRecentSocket(newSocket);
+  };
+
   useEffect(() => {
     fetchData();
+    connectRecentMgsSocket();
   }, []);
 
   const fetchPrivateMessage = async (chatId) => {
